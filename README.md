@@ -90,7 +90,7 @@ let todoState = (state = [], action = {}) => {
   default:
     return [...state];
   }
-
+}
 ```
 [jsbin](https://jsbin.com/gafufi/edit?js,console)
 
