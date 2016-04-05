@@ -15,14 +15,14 @@ When Redux is used properly - a large part of your application code becomes fram
 * [ng-summit-slides](https://github.com/e-schultz/ng-summit-slides) - Slides from Angular Summit on Redux + Angular
 * [Redux Documentaton](http://redux.js.org/)
 * [Dan Abramov Egghead.io Redux Course](https://egghead.io/lessons/javascript-redux-the-single-immutable-state-tree)
-* [Awsome Redux Resources](https://github.com/xgrommx/awesome-redux)
+* [Awesome Redux Resources](https://github.com/xgrommx/awesome-redux)
 * [ng-redux](https://github.com/wbuchwalter/ng-redux) - Angular bindings for Redux
 * [ng2-redux](https://github.com/wbuchwalter/ng2-redux) - Angular2 bindings for Redux
 * [react-redux](https://github.com/rackt/react-redux) - React bindings for Redux
 * [Angular Redux Starter](https://github.com/rangle/angular-redux-starter) - Our starter project for Angular + Redux
 * [React Redux Starter](https://github.com/rangle/react-redux-starter) - Our starter project for React + Redux
 
-# The Agenda 
+# The Agenda
 
 * Global Application State
 * [Reducers 101](#reducers-101)
@@ -34,6 +34,9 @@ When Redux is used properly - a large part of your application code becomes fram
 * [ng-redux](#ng-redux)
   * [Configuring $ngReduxProvider](#configuring-ngreduxprovider)
   * [$ngRedux.connect](#ngreduxconnect)
+* [ng2-redux](#ng2-redux)
+  * Config
+  * What's comming..
 * Components and Containers
 
 # Reducers 101
@@ -83,7 +86,7 @@ let todoState = (state = [], action = {}) => {
     return [action.payload, ...state];
   case 'TODO_COMPLETED':
 
-    return state.map(todo => 
+    return state.map(todo =>
         todo.id === action.payload.id ?
         Object.assign({}, todo, { completed: !todo.completed }) : todo
         );
@@ -92,7 +95,7 @@ let todoState = (state = [], action = {}) => {
   }
 }
 ```
-[jsbin](https://jsbin.com/gafufi/edit?js,console)
+[jsbin](https://jsbin.com/tigagatica/edit?html,js,console,output)
 
 One of the key things to keep in mind with Reducers in Redux - is that they should be pure functions, have no side effects, and not mutate the state being passed in.
 
@@ -100,12 +103,12 @@ If you mutate the state object, this can cause issues with change detection, and
 
 There are various ways to avoid mutating state, and many applications are adopting [Immutable](https://facebook.github.io/immutable-js/) to ensure this.
 
-However, it could also be worth watching 
+However, it could also be worth watching
 
 * [Avoiding Array Mutations with concat, slice and ...spread](https://egghead.io/lessons/javascript-redux-avoiding-array-mutations-with-concat-slice-and-spread)
 * [Avoiding Object Mutations with Object.assign and ...spread](https://egghead.io/lessons/javascript-redux-avoiding-object-mutations-with-object-assign-and-spread)
 
-# Unit Testing Reducers 
+# Unit Testing Reducers
 
 Since reducers are pure functions, you can easily setup an initial state and pass in an action. This makes creating unit tests for your reducers easy - and often you do not need to be concerned with Angular, React or Redux in creating your tests.
 
@@ -140,7 +143,7 @@ it('should allow parties to join the lineup', () => {
 
 Actions in Redux should return plain JSON objects that represent something that has happened in the system. When using middleware (which will be covered later), you can have actions that return promises/etc to deal with Async behavior - however even then, the result of the promise should be a plain JSON object.
 
-This is because we want the actions to be replayable and seralizable. 
+This is because we want the actions to be replayable and seralizable.
 
 I like to think of actions as being broken into two parts:
 
@@ -159,7 +162,7 @@ export function joinLine(numberOfPeople) {
   return {
     type: PARTY_JOINED,
     payload: {
-      partyId: generateId(), // <-- side effect/impure 
+      partyId: generateId(), // <-- side effect/impure
       numberOfPeople: parseInt(numberOfPeople, 10)
     }
   };
@@ -365,7 +368,7 @@ export default class LineupController {
         state => this.onUpdate(state),  // What we want to map to our target
         lineupActions                   // Actions we want to map to our target
         )(this);                        // Our target
-    
+
     $scope.$on('$destroy', disconnect); // Cleaning house
   }
 
@@ -380,7 +383,7 @@ export default class LineupController {
 onUpdate
 ----
 
-Whenever an action gets dispatched in redux, and there is a change in the application state - ngRedux will execute the function that you provided for the mapStateToTarget. 
+Whenever an action gets dispatched in redux, and there is a change in the application state - ngRedux will execute the function that you provided for the mapStateToTarget.
 
 This expects a plain javascript object to be returned. ng-redux will do a shallow check to see if the result of this function has changed since the last time it was called, and if so - will push the object onto your target.
 
@@ -399,7 +402,7 @@ To access this in your template:
 </tr>
 ```
 
-actions 
+actions
 -----
 
 ng-redux will also take care of mapping your actions to your target. In this example, the lineup actions exported are:
@@ -425,7 +428,7 @@ This means that on our target, we will be able to access `this.joinLine`, and `t
 > * Selectors are efficient. A selector is not recomputed unless one of its arguments change.
 > * Selectors are composable. They can be used as input to other selectors.
 
-Selectors can also act as a way to help decouple knowledge about the state tree, from the component using it. 
+Selectors can also act as a way to help decouple knowledge about the state tree, from the component using it.
 
 For example, if your component(s) require data in a certian format - the selector can take care of that transformation for you. If you need to change the structure of your state tree, it can be easyier to update your selector to do that transformation, and have unit tests ensuring that the resulting data is the same instead of needing to re-work the entire component to understand the new structure.
 
@@ -540,7 +543,7 @@ describe('ipGraphSelector', () => {
 
 [redux docs - Usage With React](http://redux.js.org/docs/basics/UsageWithReact.html)
 
-Keeping with this separation seems to be a little more natural/easy with React, but the same concepts can apply to Angular. 
+Keeping with this separation seems to be a little more natural/easy with React, but the same concepts can apply to Angular.
 
 * Smart containers that are aware of redux
 * Pass down the data and actions that need to be used
@@ -548,7 +551,7 @@ Keeping with this separation seems to be a little more natural/easy with React, 
 
 An example from SAD-UI:
 
-Smart Componet - the IP Graph:
+Smart Component - the IP Graph:
 
 ```javascript
 /* beautify preserve:start */
@@ -674,8 +677,23 @@ ListGraphController.$inject = [];
 
 ```
 
+# ng2-redux
 
-# What logic goes where?
+The current version of ng2-redux is very much a direct port of ng-redux. Michael and myself, with input from Cosmin, Abdella, Chris and others at Rangle are working on a TypeScript version of ng2-redux with better type support, and an improved API for working with observables.
 
+the `ngRedux.connect` API will remain the same. However, we are also introducing a `ngRedux.select`  that allows you to expose segments of the state as an observable, and works better with the Angular 2 OnPush change detection.
 
+```js
+this.owner$ = this.stateService
+  .select(state => state.filters.get('owner'));
 
+this.status$ = this.stateService
+  .select(state => state.filters.get('taskStatus'));
+
+this.tasks$ = this.stateService
+  .select(state => state.tasks)
+  .combineLatest(this.owner$, this.status$,
+    (tasks, owner, status) => {
+    // do stuff
+  });
+```
