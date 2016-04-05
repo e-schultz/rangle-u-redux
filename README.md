@@ -41,9 +41,9 @@ When Redux is used properly - a large part of your application code becomes fram
 
 # Reducers 101
 
-At the core of redux, is the idea of using Reducers to manage application state. So, lets just have a brief recape of what a reducer is.
+At the core of redux, is the idea of using Reducers to manage application state. So, lets just have a brief recap of what a reducer is.
 
-A reducer is simply a function that itterates over a collection of items, and returns a single result. The reducer function takes in an accumulator - the final value that you want, a value - the current item in the collection, and can also provide an initial value.
+A reducer is simply a function that iterates over a collection of items, and returns a single result. The reducer function takes in an accumulator - the final value that you want, a value - the current item in the collection, and can also provide an initial value.
 
 The classic example of a reducer is doing a sum:
 
@@ -143,14 +143,14 @@ it('should allow parties to join the lineup', () => {
 
 Actions in Redux should return plain JSON objects that represent something that has happened in the system. When using middleware (which will be covered later), you can have actions that return promises/etc to deal with Async behavior - however even then, the result of the promise should be a plain JSON object.
 
-This is because we want the actions to be replayable and seralizable.
+This is because we want the actions to be repayable and serializable.
 
 I like to think of actions as being broken into two parts:
 
 * Action Creators - or Commands, the request to do something.
 * Events - the result of what was done.
 
-The action creator is a wrapper functiont that takes in some paramaters, does a bit of logic - and the resulting object is a result of what happened.
+The action creator is a wrapper functions that takes in some parameters, does a bit of logic - and the resulting object is a result of what happened.
 
 If you view the result as an event that happened, what Redux does is then re-plays these events over the reducers to be able to form your application state.
 
